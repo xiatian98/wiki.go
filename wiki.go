@@ -9,6 +9,7 @@ import (
 	"os"
 	"regexp"
 )
+// https://golang.google.cn/doc/articles/wiki/
 
 type Page struct {
 	Title string
@@ -22,9 +23,11 @@ var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
 var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
 
 func main() {
+	// http.HandleFunc()调用http包处理所有请求，第一个参数是处理哪个路径的请求，第二个参数是用什么函数处理请求
 	http.HandleFunc("/view/", makeHandler(viewHandler))
 	http.HandleFunc("/edit/", makeHandler(editHandler))
 	http.HandleFunc("/save/", makeHandler(saveHandler))
+	//只有遇到错误时http.ListenAndServe()才返回值，所以用log.Fatal()记录错误
 	log.Fatal(http.ListenAndServe(":8080", nil))
 	//p1 := &Page{
 	//	Title: "TestPage",
@@ -61,6 +64,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
+	//http.ResponseWriter()将数据发送到客户端，http.Request是一个数据结构，代表用户的HTTP请求
 	//title, err := getTitle(w, r)
 	//title := r.URL.Path[len("/view/"):] //从r.URL.Path中获取页面标题
 	// 路径用len("/view/")重新切片，因为页面标题需要去掉"/view/"
